@@ -1,0 +1,40 @@
+---
+- name: "Configure server"
+  hosts: yandex-centos-industrial
+  become: yes
+  vars:
+    minecraft_version: 1.12.2
+    mods_repo: https://github.com/endermAH/industrialcraft_modpack.git
+  tasks:
+    - name: "Install REPEL"
+      yum:
+        name: epel-release
+        state: present
+        update_cache: yes
+
+    - name:
+      shell: "yum -y update"
+
+    - name: "Install Java and screen"
+      yum:
+        name: "{{ package }}"
+        state: present
+        update_cache: yes
+      loop:
+        - java-1.8.0-openjdk
+        - screen
+        - git
+      loop_control:
+        loop_var: package
+
+    - name: "Create minecraft user"
+      include_role:
+        name: create_user
+
+    - name: "Install minecraftforge"
+      include_role:
+        name: install_forge_server
+
+    - name: "Install mods"
+      include_role:
+        name: install_mods

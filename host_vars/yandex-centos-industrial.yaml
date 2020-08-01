@@ -1,0 +1,4 @@
+---
+ansible_host: 130.193.44.189
+ansible_user: centos
+hostname: yandex-centos-industrial

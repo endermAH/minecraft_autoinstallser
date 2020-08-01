@@ -1,0 +1,5 @@
+---
+- name: "Get mods from git"
+  git:
+    dest: "{{ playbook_dir }}/../servers/mods"
+    repo: "{{ mods_repo }}"

@@ -1,0 +1,32 @@
+---
+- name: "Create {{ user_group }} group"
+  group:
+    name: "{{ user_group }}"
+    state: present
+
+- name: "Allow {{ user_group }} group to have passwordless sudo"
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%{{ user_group }}'
+    line: '%{{ user_group }} ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: "Create {{ username }} user"
+  user:
+    name: "{{ username }}"
+    password: "{{ '%s' | format(password) | password_hash('sha512') }}"
+    group: "{{ user_group }}"
+    shell: /bin/bash
+
+- name: "Enable password authentication"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: "PasswordAuthentication no"
+    line: "PasswordAuthentication yes"
+
+- name: "Restart ssh"
+  service:
+    name: sshd
+    state: restarted

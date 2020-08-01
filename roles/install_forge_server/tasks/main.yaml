@@ -1,0 +1,11 @@
+---
+- name: "Copy minecraft server files"
+  copy:
+    src: "{{ servers_folder }}/{{ minecraft_version }}"
+    dest: "{{ install_folder }}"
+
+- name: "Accept EULA"
+  lineinfile:
+    path: "{{ install_folder }}/eula.txt"
+    line: "eula=true"
+    create: yes
